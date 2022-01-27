@@ -159,6 +159,7 @@ class HttpTransport {
                     eventsInRetry.addAndGet(-numEventsRemoved);
                   }
                   if (!shouldRetry || eventCount < 1) {
+                      triggerEventCallbacks(eventsToRetry, retryResult.statusCode, "Event dropped for retry");
                     break;
                   }
                   if (shouldReduceEventCount && !isLastTry) {
@@ -220,6 +221,12 @@ class HttpTransport {
           eventIndicesToRemove = response.collectInvalidEventIndices();
         }
         break;
+      case FAILED:
+          shouldRetry = false;
+          break;
+      case UNKNOWN:
+          shouldRetry = false;
+          break;
       default:
         break;
     }

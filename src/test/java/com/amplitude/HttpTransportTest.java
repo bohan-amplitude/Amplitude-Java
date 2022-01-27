@@ -282,6 +282,7 @@ public class HttpTransportTest {
             throws AmplitudeInvalidAPIKeyException, InterruptedException {
         HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
         Response failedResponse = ResponseUtil.getFailedResponse();
+        Response invalidResponse = ResponseUtil.getInvalidResponse(false);
         HttpCall httpCall = mock(HttpCall.class);
         CountDownLatch latch = new CountDownLatch(1);
         when(httpCall.makeRequest(anyList()))
@@ -302,7 +303,7 @@ public class HttpTransportTest {
                 };
         httpTransport.setHttpCall(httpCall);
         httpTransport.setCallbacks(callbacks);
-        httpTransport.sendEventsWithRetry(events);
+        httpTransport.retryEvents(events, invalidResponse);
         assertTrue(latch.await(1L, TimeUnit.SECONDS));
         verify(httpCall, times(1)).makeRequest(anyList());
         for (int i = 0; i < events.size(); i++) {
@@ -315,6 +316,7 @@ public class HttpTransportTest {
             throws AmplitudeInvalidAPIKeyException, InterruptedException {
         HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
         Response unknownResponse = ResponseUtil.getUnknownResponse();
+        Response invalidResponse = ResponseUtil.getInvalidResponse(false);
         HttpCall httpCall = mock(HttpCall.class);
         CountDownLatch latch = new CountDownLatch(1);
         when(httpCall.makeRequest(anyList()))
@@ -335,7 +337,7 @@ public class HttpTransportTest {
                 };
         httpTransport.setHttpCall(httpCall);
         httpTransport.setCallbacks(callbacks);
-        httpTransport.sendEventsWithRetry(events);
+        httpTransport.retryEvents(events, invalidResponse);
         assertTrue(latch.await(1L, TimeUnit.SECONDS));
         verify(httpCall, times(1)).makeRequest(anyList());
         for (int i = 0; i < events.size(); i++) {
