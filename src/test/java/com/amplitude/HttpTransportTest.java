@@ -28,13 +28,6 @@ import com.amplitude.util.EventsGenerator;
 @ExtendWith(MockitoExtension.class)
 public class HttpTransportTest {
 
-  private HttpTransport httpTransport;
-
-  @BeforeEach
-  public void setUp() {
-    httpTransport = new HttpTransport(null, null, new AmplitudeLog());
-  }
-
   @ParameterizedTest
   @CsvSource({
     "SUCCESS, false",
@@ -46,11 +39,13 @@ public class HttpTransportTest {
     "UNKNOWN, false"
   })
   public void testShouldRetryForStatus(Status status, boolean expected) {
+      HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
     assertEquals(expected, httpTransport.shouldRetryForStatus(status));
   }
 
   @Test
   public void testRetryEvents() throws AmplitudeInvalidAPIKeyException, InterruptedException {
+      HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
     Response successResponse = ResponseUtil.getSuccessResponse();
     Response payloadTooLargeResponse = ResponseUtil.getPayloadTooLargeResponse();
     Response invalidResponse = ResponseUtil.getInvalidResponse(false);
@@ -106,6 +101,7 @@ public class HttpTransportTest {
   @Test
   public void testRetryEventsWithInvalidEvents()
       throws AmplitudeInvalidAPIKeyException, InterruptedException {
+      HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
     Response invalidResponse = ResponseUtil.getInvalidResponse(true);
     Response successResponse = ResponseUtil.getSuccessResponse();
 
@@ -145,6 +141,7 @@ public class HttpTransportTest {
   @Test
   public void testRetryEventsWithInvalidFieldsDuringRetry()
       throws AmplitudeInvalidAPIKeyException, InterruptedException {
+      HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
     Response rateLimitResponse = ResponseUtil.getRateLimitResponse(false);
     Response invalidResponse = ResponseUtil.getInvalidResponse(true);
     Response successResponse = ResponseUtil.getSuccessResponse();
@@ -188,6 +185,7 @@ public class HttpTransportTest {
 
   @Test
   public void testRetryEventWithUserExceedQuota() {
+      HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
     Response rateLimitResponse = ResponseUtil.getRateLimitResponse(true);
     List<Event> events = EventsGenerator.generateEvents(10);
     Map<Event, Integer> resultMap = new HashMap<>();
@@ -208,6 +206,7 @@ public class HttpTransportTest {
   @Test
   public void testRetryEventWithUserExceedQuotaDuringRetry()
       throws AmplitudeInvalidAPIKeyException, InterruptedException {
+      HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
     Response invalidResponse = ResponseUtil.getInvalidResponse(false);
     Response rateLimitResponse = ResponseUtil.getRateLimitResponse(true);
     Response successResponse = ResponseUtil.getSuccessResponse();
@@ -242,6 +241,7 @@ public class HttpTransportTest {
     @Test
     public void testRetryEventWithTimeout()
             throws AmplitudeInvalidAPIKeyException, InterruptedException {
+        HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
         Response timeoutResponse = ResponseUtil.getTimeoutResponse();
         Response successResponse = ResponseUtil.getSuccessResponse();
         HttpCall httpCall = mock(HttpCall.class);
@@ -280,6 +280,7 @@ public class HttpTransportTest {
     @Test
     public void testFailedResponse()
             throws AmplitudeInvalidAPIKeyException, InterruptedException {
+        HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
         Response failedResponse = ResponseUtil.getFailedResponse();
         HttpCall httpCall = mock(HttpCall.class);
         CountDownLatch latch = new CountDownLatch(1);
@@ -312,6 +313,7 @@ public class HttpTransportTest {
     @Test
     public void testUnknownResponse()
             throws AmplitudeInvalidAPIKeyException, InterruptedException {
+        HttpTransport httpTransport = new HttpTransport(null, null, new AmplitudeLog());
         Response unknownResponse = ResponseUtil.getUnknownResponse();
         HttpCall httpCall = mock(HttpCall.class);
         CountDownLatch latch = new CountDownLatch(1);
